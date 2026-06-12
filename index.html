@@ -3,10 +3,10 @@
     table, th, td {
       border: 1px solid black;
       border-collapse: collapse;
-      padding: 1em;
+      padding: 0.5em;
     }
     th {
-      background-color: lightgray;
+      background-color: ButtonFace;
     }
   </style>
 </head>
@@ -69,6 +69,7 @@
   }
 
   function populateTable(rows) {
+    tbody.innerHTML = "";
     rows.forEach((row) => {
       const tr = document.createElement("tr");
       row.forEach((col) => {
