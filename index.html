@@ -1,24 +1,45 @@
+<head>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 1em;
+    }
+    th {
+      background-color: lightgray;
+    }
+  </style>
+</head>
 <body>
   <div id="config">
   <!-- ring inputs injected here -->
   </div>
+  
   <div id="actions">
     <button id="addRingBtn">Add ring</button>
     <button id="showPcsBtn">Show pc sets</button>
   </div>
-  <span id="output"></span>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>pc set</th>
+        <th>m</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- Rows injected by JS -->
+    </tbody>
+  </table>
 </body>
+
 <script>
   const config = document.getElementById('config')
   const addRingBtn = document.getElementById('addRingBtn');
   const showPcsBtn = document.getElementById('showPcsBtn');
-  const output = document.getElementById('output');
-  
-  let counter = 0;
+  const tableBody = document.getElementById('tableBody');
   
   function addRing(value = null) {
-    counter++;
-  
     const row = document.createElement('div');
   
     const input = document.createElement('input');
@@ -46,12 +67,25 @@
     const values = inputs.map(i => i.value);
     return values;
   }
+
+  function populateTable(rows) {
+    rows.forEach((row) => {
+      const tr = document.createElement("tr");
+      row.forEach((col) => {
+        const td = document.createElement("td");
+        td.textContent = col;
+        tr.appendChild(td);
+      });
+      tableBody.appendChild(tr);
+    });
+  }
   
   addRingBtn.addEventListener('click', () => addRing());
   showPcsBtn.addEventListener('click', () => {
     const values = getConfigValues();
-    output.textContent = values.join(',');
+    populateTable([values, values]);
   });
   
-  addRing(12);
+  addRing(12)
+
 </script>
