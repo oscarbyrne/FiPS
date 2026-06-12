@@ -83,11 +83,53 @@
       tableBody.appendChild(tr);
     });
   }
+
+  function J(d, m, k) {
+      if (d.length < 2 || m.length < 1) return k;
+      k = J(d.slice(1), m.slice(1), k);
+      return Math.floor((k * d[0] + m[0]) / d[1]);
+  }
+  
+  function* pairwise(arr) {
+      for (let i = 0; i < arr.length - 1; i++) yield [arr[i], arr[i + 1]];
+  }
+  
+  function* product(...pools) {
+      if (!pools.length) { yield []; return; }
+      const indices = new Array(pools.length).fill(0);
+      while (true) {
+          yield indices.map((idx, i) => pools[i][idx]);
+          let i = pools.length - 1;
+          while (i >= 0 && ++indices[i] === pools[i].length) indices[i--] = 0;
+          if (i < 0) return;
+      }
+  }
+  
+  function buildScalesToM(config) {
+      const ranges = Array.from(pairwise(config), ([a, b]) =>
+          Array.from({ length: a * b }, (_, i) => i)
+      );
+  
+      const scalesToM = new Map();
+  
+      for (const m of product(...ranges)) {
+          const key = Array.from({ length: config.at(-1) }, (_, k) =>
+              J(config, m, k) % config[0]
+          ).join(',');
+  
+          const bucket = scalesToM.get(key);
+          if (bucket) bucket.push(m);
+          else scalesToM.set(key, [m]);
+      }
+  
+      return scalesToM;
+  }
   
   addRingBtn.addEventListener('click', () => addRing());
   showPcsBtn.addEventListener('click', () => {
     const values = getConfigValues();
-    populateTable([values, values]);
+    const scalesToM = buildScalesToM(values);
+    populateTable(scalesToM);
   });
   
   addRing(12)
