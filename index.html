@@ -110,9 +110,9 @@
       const scalesToM = new Map();
   
       for (const m of product(...ranges)) {
-          const key = Array.from({ length: config.at(-1) }, (_, k) =>
-              J(config, m, k) % config[0]
-          ).join(',');
+          const key = new Set(
+            Array.from({ length: config.at(-1) }, (_, k) => J(config, m, k) % config[0])
+          );
   
           const bucket = scalesToM.get(key);
           if (bucket) bucket.push(m);
@@ -127,7 +127,7 @@
     const values = getConfigValues();
     const scalesToM = buildScalesToM(values);
     populateTable(
-      Array.from(scalesToM, ([k, v]) => [k, v.join(',')])
+      Array.from(scalesToM, ([k, v]) => [k, v])
     );
   });
   
