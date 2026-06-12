@@ -1,6 +1,6 @@
 <head>
   <style>
-    div {
+    * {
       margin: 1em;
     }
     table, th, td {
@@ -128,10 +128,10 @@
   addRingBtn.addEventListener('click', () => addRing());
   showPcsBtn.addEventListener('click', () => {
     const values = getConfigValues();
-    const scalesToM = buildScalesToM(values);
-    populateTable(
-      Array.from(scalesToM, ([k, v]) => [k, v.join(',')]);
-    );
+    // const scalesToM = buildScalesToM(values);
+    // populateTable(
+    //   Array.from(scalesToM, ([k, v]) => [k, v.join(',')]);
+    // );
   });
   
   addRing(12)
