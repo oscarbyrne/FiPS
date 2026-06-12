@@ -1,1 +1,57 @@
-hello
+<body>
+  <div id="config">
+  <!-- ring inputs injected here -->
+  </div>
+  <div id="actions">
+    <button id="addRingBtn">Add ring</button>
+    <button id="showPcsBtn">Show pc sets</button>
+  </div>
+  <span id="output"></span>
+</body>
+<script>
+  const config = document.getElementById('config')
+  const addRingBtn = document.getElementById('addRingBtn');
+  const showPcsBtn = document.getElementById('showPcsBtn');
+  const output = document.getElementById('output');
+  
+  let counter = 0;
+  
+  function addRing(value = null) {
+    counter++;
+  
+    const row = document.createElement('div');
+  
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.autocomplete = 'off';
+  
+    const removeBtn = document.createElement('button');
+    removeBtn.title = 'Remove';
+    removeBtn.innerHTML = 'x';
+    removeBtn.addEventListener('click', () => {
+      row.remove()
+    })
+  
+    row.append(input, removeBtn);
+    config.appendChild(row)
+    if(value != null) {
+      input.value = value;
+    } else {
+      input.focus();
+    }
+  }
+  
+  function getConfigValues() {
+    const inputs = [...config.querySelectorAll('input')];
+    const values = inputs.map(i => i.value);
+    return values;
+  }
+  
+  addRingBtn.addEventListener('click', () => addRing());
+  showPcsBtn.addEventListener('click', () => {
+    const values = getConfigValues();
+    output.textContent = values.join(',');
+  });
+  
+  addRing(12);
+</script>
