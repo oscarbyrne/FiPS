@@ -16,6 +16,9 @@
     .inline-button {
       margin-inline: 0.5rem;
     }
+    input {
+      field-sizing: content;
+    }
     table, th, td {
       border: 1px solid black;
       border-collapse: collapse;
@@ -66,6 +69,7 @@
 
 <script>
   const config = document.getElementById('config')
+  const filter = document.getElementById('filter')
   const addRingBtn = document.getElementById('addRingBtn');
   const addPcBtn = document.getElementById('addPcBtn');
   const updateBtn = document.getElementById('updateBtn');
@@ -136,7 +140,7 @@
       }
   }
   
-  function buildScalesToM(config) {
+  function buildScalesToM(config, filter) {
       const ranges = Array.from(pairwise(config), ([a, b]) =>
           Array.from({ length: a * b }, (_, i) => i)
       );
@@ -147,11 +151,13 @@
           const pcs = Array.from(
             { length: config.at(-1) }, (_, k) => J(config, m, k) % config[0]
           ).toSorted((a, b) => a - b);
-          const key = `{${pcs.join(',')}}`;
-  
-          const bucket = scalesToM.get(key);
-          if (bucket) bucket.push(m);
-          else scalesToM.set(key, [m]);
+          const allMatch = filter.every(pc => pcs.includes(pc));
+          if (allMatch) {
+            const key = `{${pcs.join(',')}}`;
+            const bucket = scalesToM.get(key);
+            if (bucket) bucket.push(m);
+            else scalesToM.set(key, [m]);
+          }
       }
   
       return scalesToM;
@@ -160,8 +166,9 @@
   addRingBtn.addEventListener('click', () => addInput(config));
   addPcBtn.addEventListener('click', () => addInput(filter));
   updateBtn.addEventListener('click', () => {
-    const values = getValues(config);
-    const scalesToM = buildScalesToM(values);
+    const configValues = getValues(config);
+    const filterValues = getValues(filter);
+    const scalesToM = buildScalesToM(configValues, filterValues);
     populateTable(
       Array.from(scalesToM, ([k, v]) => [k, v.map((i) => `[${i.join(',')}]`).join(', ')])
     );
