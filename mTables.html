@@ -3,16 +3,12 @@
     body {
       padding: 1rem;
     }
-    .flex-container {
-      display: flex;
-      gap: 1rem;
-    }
     .column {
       flex: 1;
     }
     .row {
       margin-block: 0.5rem;
-      display: inline-flex;
+      display: flex;
       align-items: center;
     }
     .inline-button {
@@ -36,7 +32,7 @@
   </style>
 </head>
 <body>
-  <div class="flex-container">
+  <div class="row">
     <div class="column">
       <h2>FiPS Configuration</h2>
       <div id="config">
