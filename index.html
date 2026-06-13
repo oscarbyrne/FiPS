@@ -166,14 +166,14 @@
           const mPrefixMatch = rotation.every(
             (val, i) => val === null || val === m[i]
           );
-          if (not mPrefixMatch) {
+          if (!mPrefixMatch) {
             continue;
           }
           const pcs = Array.from(
             { length: config.at(-1) }, (_, k) => J(config, m, k) % config[0]
           );
           const allPcMatch = filter.every(pc => pcs.includes(pc));
-          if (not allPcMatch) {
+          if (!allPcMatch) {
             continue;
           }
           const key = `{${pcs.toSorted((a, b) => a - b).join(',')}}`;
