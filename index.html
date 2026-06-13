@@ -41,6 +41,15 @@
         <button id="addRingBtn">Add ring</button>
       </div>
     </div>
+    <div class="column>
+      <h2>Rotation</h2>
+      <div id="rotation">
+        <!-- rotation inputs injected here -->
+      </div>
+      <div class="row">
+        <button id="addMBtn">Add m</button>
+      </div>
+    </div>
     <div class="column">
       <h2>Pitch Classes</h2>
       <div id="filter">
@@ -70,8 +79,10 @@
 
 <script>
   const config = document.getElementById('config')
+  const rotation = document.getElementById('rotation')
   const filter = document.getElementById('filter')
   const addRingBtn = document.getElementById('addRingBtn');
+  const addMBtn = document.getElementById('addMBtn');
   const addPcBtn = document.getElementById('addPcBtn');
   const updateBtn = document.getElementById('updateBtn');
   const tableBody = document.getElementById('tableBody');
@@ -141,7 +152,7 @@
       }
   }
   
-  function buildScalesToM(config, filter) {
+  function buildScalesToM(config, rotation, filter) {
       const ranges = Array.from(pairwise(config), ([a, b]) =>
           Array.from({ length: a * b }, (_, i) => i)
       );
@@ -165,11 +176,13 @@
   }
   
   addRingBtn.addEventListener('click', () => addInput(config));
+  addMBtn.addEventListener('click', () => addInput(rotation));
   addPcBtn.addEventListener('click', () => addInput(filter));
   updateBtn.addEventListener('click', () => {
     const configValues = getValues(config);
+    const rotationValues = getValues(rotation);
     const filterValues = getValues(filter);
-    const scalesToM = buildScalesToM(configValues, filterValues);
+    const scalesToM = buildScalesToM(configValues, rotationValues, filterValues);
     populateTable(
       Array.from(scalesToM, ([k, v]) => [k, v.map((i) => `[${i.join(',')}]`).join(', ')])
     );
