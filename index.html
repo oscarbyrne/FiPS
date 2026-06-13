@@ -163,7 +163,7 @@
       const scalesToM = new Map();
   
       for (const m of product(...ranges)) {
-          const mPrefixMatch = rotation.every((val, i) => val === null | val === m[i]);
+          const mPrefixMatch = rotation.every((val, i) => val === null || val === m[i]);
           if (not mPrefixMatch) {
             continue;
           }
