@@ -1,8 +1,75 @@
 <head>
   body {
-      padding: 1rem;
-    }
+    padding: 1rem;
+  }
+  #readout {
+    margin-block: 0.5rem;
+    border-width: 1px;
+    border-style: solid;
+    border-color: gray;
+    height: 1rem;
+    width: fit-content;
+    min-width: 1rem;
+    padding: 0.5rem;
+  }
+  .bar {
+    width: 1px;
+    height: 1rem;
+    background-color: gray;
+    display: inline-block;
+    margin-inline: 0.25rem;
+  }
+  input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    margin-block: 0.5rem;
+  }
 </head>
 <body>
-  hello
+  <input id="count" type="number" min="1" max="16" value="16">
+  <button onclick="generate()">Update</button>
+  <div id="readout"></div>
+  <div id="grid"></div>
 </body>
+<script>
+  const countInput = document.getElementById('count');
+  const readout = document.getElementById('readout');
+  const grid = document.getElementById('grid');
+  
+  function generate() {
+    const count = Number(countInput.value)
+    grid.innerHTML = '';
+    let line = document.createElement("div");
+    grid.appendChild(line);
+    for (let i = 0; i < count; i++) {
+      if (i != 0) {
+        if (i % 16 == 0) {
+          const hr = document.createElement("hr");
+          grid.appendChild(hr);
+        }
+        if (i % 8 == 0) {
+          line = document.createElement("div");
+          grid.appendChild(line);
+        } else if (i % 4 == 0) {
+          const bar = document.createElement("div");
+          bar.classList.add("bar");
+          line.appendChild(bar);
+        }
+      }
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.addEventListener('change', updateReadout);
+      line.appendChild(cb);
+    }
+  }
+  
+  function updateReadout() {
+    const cbs = document.querySelectorAll('input[type="checkbox"]');
+    const checked = [];
+    cbs.forEach((cb, idx) => {
+      if (cb.checked) checked.push(idx);
+    });
+    readout.textContent = checked.join(',');
+  }
+  
+</script>
