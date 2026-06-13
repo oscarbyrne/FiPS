@@ -152,7 +152,7 @@
           const pcs = Array.from(
             { length: config.at(-1) }, (_, k) => J(config, m, k) % config[0]
           );
-          const allMatch = filter.every(pc => pcs.includes(pc));
+          const allMatch = filter.every(pc => pcs.includes(Number(pc)));
           if (allMatch) {
             const key = `{${pcs.toSorted((a, b) => a - b).join(',')}}`;
             const bucket = scalesToM.get(key);
