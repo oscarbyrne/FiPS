@@ -151,10 +151,10 @@
       for (const m of product(...ranges)) {
           const pcs = Array.from(
             { length: config.at(-1) }, (_, k) => J(config, m, k) % config[0]
-          ).toSorted((a, b) => a - b);
+          );
           const allMatch = filter.every(pc => pcs.includes(pc));
           if (allMatch) {
-            const key = `{${pcs.join(',')}}`;
+            const key = `{${pcs.toSorted((a, b) => a - b).join(',')}}`;
             const bucket = scalesToM.get(key);
             if (bucket) bucket.push(m);
             else scalesToM.set(key, [m]);
