@@ -34,6 +34,13 @@
 </head>
 <body>
   <div class="row">
+    <label>Octave lock:</label>
+    <input id="octaveLockCb" type="checkbox" checked>
+  </div>
+  <div class="row">
+    <button id="updateBtn">Update</button>
+  </div>
+  <div class="row">
     <div class="column">
       <h2>FiPS Configuration</h2>
       <div id="config">
@@ -63,15 +70,6 @@
     </div>
   </div>
   <hr>
-  <div>
-    <div class="row">
-      <label>Octave lock:</label>
-      <input id="octaveLockCb" type="checkbox" checked>
-    </div>
-    <div class="row">
-      <button id="updateBtn">Update</button>
-    </div>
-  </div>
   <table>
     <thead>
       <tr>
@@ -192,11 +190,8 @@
   
       return scalesToM;
   }
-  
-  addRingBtn.addEventListener('click', () => addInput(config));
-  addMBtn.addEventListener('click', () => addInput(rotation));
-  addPcBtn.addEventListener('click', () => addInput(filter));
-  updateBtn.addEventListener('click', () => {
+
+  function update() {
     const configValues = getValues(config);
     const rotationValues = getValues(rotation);
     const filterValues = getValues(filter);
@@ -204,8 +199,14 @@
     populateTable(
       Array.from(scalesToM, ([k, v]) => [k, v.map((i) => `[${i.join(',')}]`).join(', ')])
     );
-  });
+  }
+  
+  addRingBtn.addEventListener('click', () => addInput(config));
+  addMBtn.addEventListener('click', () => addInput(rotation));
+  addPcBtn.addEventListener('click', () => addInput(filter));
+  updateBtn.addEventListener('click', () => update());
   
   addInput(config, 12);
+  update();
 
 </script>
