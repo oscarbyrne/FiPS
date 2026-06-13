@@ -1,11 +1,11 @@
 <head>
   <title>Strudlify</title>
 </head>
-<script src="https://unpkg.com/@strudel/repl@latest"></script>
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
 <div id="strudel"></div>
 <script>
-  const repl = document.createElement('strudel-editor');
-  repl.setAttribute(
+  let editor = document.createElement('strudel-repl');
+  editor.setAttribute(
     'code',
     `setcps(1)
 n("<0 1 2 3 4>*8").scale('G4 minor')
@@ -16,5 +16,5 @@ n("<0 1 2 3 4>*8").scale('G4 minor')
 .sometimes(add(note("12")))
 .lpf(perlin.range(200,20000).slow(4))`,
   );
-  document.getElementById('strudel').append(repl);
+  document.getElementById('strudel').append(editor);
 </script>
