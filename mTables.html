@@ -64,8 +64,13 @@
     </div>
   </div>
   <hr>
-  <div class="row">
-    <button id="updateBtn">Update</button>
+  <div>
+    <div class="row">
+      Octave lock: <input id="octaveLockCb" type="checkbox">
+    </div>
+    <div class="row">
+      <button id="updateBtn">Update</button>
+    </div>
   </div>
   <table>
     <thead>
@@ -87,6 +92,7 @@
   const addRingBtn = document.getElementById('addRingBtn');
   const addMBtn = document.getElementById('addMBtn');
   const addPcBtn = document.getElementById('addPcBtn');
+  const octaveLockCb = document.getElementById('octaveLockCb');
   const updateBtn = document.getElementById('updateBtn');
   const tableBody = document.getElementById('tableBody');
 
@@ -156,8 +162,10 @@
   }
   
   function buildScalesToM(config, rotation, filter) {
+      const length = octaveLockCb.checked ? (a, b) => a : (a, b) => a * b;
+    
       const ranges = Array.from(pairwise(config), ([a, b]) =>
-          Array.from({ length: a }, (_, i) => i)
+          Array.from({ length: length(a, b) }, (_, i) => i)
       );
   
       const scalesToM = new Map();
