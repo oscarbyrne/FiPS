@@ -50,7 +50,7 @@
         <!-- rotation inputs injected here -->
       </div>
       <div class="row">
-        <button id="addMBtn">Add m</button>
+        <button id="addMBtn">With m</button>
       </div>
     </div>
     <div class="column">
@@ -59,7 +59,7 @@
         <!-- filter inputs injected here -->
       </div>
       <div class="row">
-        <button id="addPcBtn">Add pc</button>
+        <button id="addPcBtn">With pc</button>
       </div>
     </div>
   </div>
@@ -117,7 +117,7 @@
   
   function getValues(parent) {
     const inputs = [...parent.querySelectorAll('input')];
-    const values = inputs.map(i => i.value);
+    const values = inputs.map(i => i == "" ? null : Number(i.value));
     return values;
   }
 
@@ -163,16 +163,21 @@
       const scalesToM = new Map();
   
       for (const m of product(...ranges)) {
+          const allMMatch = rotation.every((val, i) => val === null | val === m[i]);
+          if (not allMMatch) {
+            continue;
+          }
           const pcs = Array.from(
             { length: config.at(-1) }, (_, k) => J(config, m, k) % config[0]
           );
-          const allMatch = filter.every(pc => pcs.includes(Number(pc)));
-          if (allMatch) {
-            const key = `{${pcs.toSorted((a, b) => a - b).join(',')}}`;
-            const bucket = scalesToM.get(key);
-            if (bucket) bucket.push(m);
-            else scalesToM.set(key, [m]);
+          const allPcMatch = filter.every(pc => pcs.includes(pc));
+          if (not allPcMatch) {
+            continue;
           }
+          const key = `{${pcs.toSorted((a, b) => a - b).join(',')}}`;
+          const bucket = scalesToM.get(key);
+          if (bucket) bucket.push(m);
+          else scalesToM.set(key, [m]);
       }
   
       return scalesToM;
