@@ -13,6 +13,14 @@
       min-width: 1rem;
       padding: 0.5rem;
     }
+    #grid {
+      position: relative;
+      width: fit-content;
+    }
+    hr {
+      width: 100%;
+      margin-block: 0.25rem;
+    }
     .bar {
       width: 1px;
       height: 1rem;
@@ -37,7 +45,7 @@
   const countInput = document.getElementById('count');
   const readout = document.getElementById('readout');
   const grid = document.getElementById('grid');
-  
+
   function generate() {
     const count = Number(countInput.value)
     grid.innerHTML = '';
@@ -64,7 +72,7 @@
       line.appendChild(cb);
     }
   }
-  
+
   function updateReadout() {
     const cbs = document.querySelectorAll('input[type="checkbox"]');
     const checked = [];
@@ -73,5 +81,4 @@
     });
     readout.textContent = checked.join(',');
   }
-  
 </script>
