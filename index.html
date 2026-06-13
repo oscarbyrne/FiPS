@@ -8,7 +8,10 @@
       flex: 1;
     }
     .row {
-      margin-block: 0.5em;
+      margin-block: 1em;
+    }
+    .inline-button {
+      margin-inline: 1em;
     }
     table, th, td {
       border: 1px solid black;
@@ -76,6 +79,7 @@
     const removeBtn = document.createElement('button');
     removeBtn.title = 'Remove';
     removeBtn.innerHTML = 'x';
+    removeBtn.classList.add("inline-button");
     removeBtn.addEventListener('click', () => {
       row.remove()
     })
