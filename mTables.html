@@ -157,7 +157,7 @@
   
   function buildScalesToM(config, rotation, filter) {
       const ranges = Array.from(pairwise(config), ([a, b]) =>
-          Array.from({ length: a * b }, (_, i) => i)
+          Array.from({ length: a }, (_, i) => i)
       );
   
       const scalesToM = new Map();
