@@ -6,7 +6,9 @@
     }
     .column {
       flex: 1;
-      padding: 1em;
+    }
+    .row {
+      margin-block: 0.5em;
     }
     table, th, td {
       border: 1px solid black;
@@ -25,18 +27,24 @@
       <div id="config">
         <!-- ring inputs injected here -->
       </div>
-      <button id="addRingBtn">Add ring</button>
+      <div class="row">
+        <button id="addRingBtn">Add ring</button>
+      </div>
     </div>
     <div class="column">
       <h2>Pitch Classes</h2>
       <div id="filter">
         <!-- filter inputs injected here -->
       </div>
-      <button id="addPcBtn">Add pc</button>
+      <div class="row">
+        <button id="addPcBtn">Add pc</button>
+      </div>
     </div>
   </div>
   <h2>Output</h2>
-  <button id="updateBtn">Update</button>
+  <div class="row">
+    <button id="updateBtn">Update</button>
+  </div>
   <table>
     <thead>
       <tr>
@@ -59,6 +67,7 @@
 
   function addInput(parent, value = null) {
     const row = document.createElement('div');
+    row.classList.add("row");
   
     const input = document.createElement('input');
     input.type = 'text';
