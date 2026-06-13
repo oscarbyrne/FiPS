@@ -117,7 +117,7 @@
   
   function getValues(parent) {
     const inputs = [...parent.querySelectorAll('input')];
-    const values = inputs.map(i => i == "" ? null : Number(i.value));
+    const values = inputs.map(i => i === "" ? null : Number(i.value));
     return values;
   }
 
