@@ -8,18 +8,26 @@
     th {
       background-color: ButtonFace;
     }
+    input, button {
+      padding-block: 0.5em;
+    }
   </style>
 </head>
 <body>
+  <h2>FiPS Configuration</h2>
   <div id="config">
-  <!-- ring inputs injected here -->
+    <!-- ring inputs injected here -->
   </div>
-  
-  <div id="actions">
-    <button id="addRingBtn">Add ring</button>
-    <button id="showPcsBtn">Show pc sets</button>
+  <button id="addRingBtn">Add ring</button>
+
+  <h2>Pitch Classes</h2>
+  <div id="filter">
+    <!-- filter inputs injected here -->
   </div>
+  <button id="addPcBtn">Add pc</button>
   
+  <h2>Output</h2>
+  <button id="updateBtn">Update</button>
   <table>
     <thead>
       <tr>
@@ -36,10 +44,11 @@
 <script>
   const config = document.getElementById('config')
   const addRingBtn = document.getElementById('addRingBtn');
-  const showPcsBtn = document.getElementById('showPcsBtn');
+  const addPcBtn = document.getElementById('addPcBtn');
+  const updateBtn = document.getElementById('updateBtn');
   const tableBody = document.getElementById('tableBody');
-  
-  function addRing(value = null) {
+
+  function addInput(parent, value = null) {
     const row = document.createElement('div');
   
     const input = document.createElement('input');
@@ -54,7 +63,7 @@
     })
   
     row.append(input, removeBtn);
-    config.appendChild(row)
+    parent.appendChild(row)
     if(value != null) {
       input.value = value;
     } else {
@@ -62,8 +71,8 @@
     }
   }
   
-  function getConfigValues() {
-    const inputs = [...config.querySelectorAll('input')];
+  function getValues(parent) {
+    const inputs = [...parent.querySelectorAll('input')];
     const values = inputs.map(i => i.value);
     return values;
   }
@@ -123,15 +132,16 @@
       return scalesToM;
   }
   
-  addRingBtn.addEventListener('click', () => addRing());
-  showPcsBtn.addEventListener('click', () => {
-    const values = getConfigValues();
+  addRingBtn.addEventListener('click', () => addInput(config));
+  addPcBtn.addEventListener('click', () => addInput(filter));
+  updateBtn.addEventListener('click', () => {
+    const values = getValues(config);
     const scalesToM = buildScalesToM(values);
     populateTable(
       Array.from(scalesToM, ([k, v]) => [k, v.map((i) => `[${i.join(',')}]`).join(', ')])
     );
   });
   
-  addRing(12)
+  addInput(config, 12);
 
 </script>
