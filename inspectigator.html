@@ -177,11 +177,23 @@
     })
     const actionsCell = document.createElement('td');
     actionsCell.className = 'row-action';
+
+    const select = document.createElement('select');
+    const optionsData = ["rhythm", "chord", "arpeggio"];
+    optionsData.forEach(option => {
+      select.add(new Option(option));
+    });
+    actionsCell.appendChild(select);
+
+    const audition = document.createElement('input');
+    audition.type = "checkbox";
+    actionsCell.appendChild(audition);
+
     const removeButton = document.createElement('button');
-    removeButton.textContent = 'X';
+    removeButton.textContent = 'x';
     removeButton.addEventListener('click', () => newRow.remove());
     actionsCell.appendChild(removeButton);
-  
+    
     newRow.appendChild(actionsCell);
     audtionTableBody.appendChild(newRow);
   }
