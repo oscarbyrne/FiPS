@@ -162,7 +162,7 @@
       auditionButton.textContent = "audition";
       auditionButton.addEventListener('click', () => audtionColorSet(tr));
       actionsCell.appendChild(auditionButton);
-      row.appendChild(actions);
+      row.appendChild(actionsCell);
       tableBody.appendChild(row);
     }
   }
@@ -175,14 +175,14 @@
       newCell.textContent = cell.textContent;
       newRow.appendChild(newCell);
     })
-    const actions = document.createElement('td');
-    actions.className = 'row-action';
+    const actionsCell = document.createElement('td');
+    actionsCell.className = 'row-action';
     const removeButton = document.createElement('button');
     removeButton.textContent = 'X';
     removeButton.addEventListener('click', () => newRow.remove());
-    actions.appendChild(removeButton);
+    actionsCell.appendChild(removeButton);
   
-    newRow.appendChild(actions);
+    newRow.appendChild(actionsCell);
     audtionTableBody.appendChild(newRow);
   }
 
