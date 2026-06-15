@@ -160,7 +160,7 @@
       actionsCell.className = 'row-action';
       const auditionButton = document.createElement('button');
       auditionButton.textContent = "audition";
-      auditionButton.addEventListener('click', () => audtionColorSet(tr));
+      auditionButton.addEventListener('click', () => audtionColorSet(row));
       actionsCell.appendChild(auditionButton);
       row.appendChild(actionsCell);
       tableBody.appendChild(row);
