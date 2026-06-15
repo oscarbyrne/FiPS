@@ -38,6 +38,7 @@
     <thead>
       <tr>
         <th>c set</th>
+        <th>config</th>
         <th>m</th>
         <th>actions</th>
       </tr>
@@ -88,6 +89,7 @@
     <thead>
       <tr>
         <th>c set</th>
+        <th>config</th>
         <th>m</th>
         <th>actions</th>
       </tr>
@@ -141,24 +143,28 @@
     return values;
   }
 
-  function populateTable(rows) {
+  function populateTable(configValues, scalesToM) {
     tableBody.innerHTML = "";
-    rows.forEach((row) => {
-      const tr = document.createElement("tr");
-      row.forEach((col) => {
-        const td = document.createElement("td");
-        td.textContent = col;
-        tr.appendChild(td);
-      });
-      const actions = document.createElement('td');
-      actions.className = 'row-action';
+    for (const [cSet, ms] of scalesToM) {
+      const row = document.createElement("tr");
+      const cSetCell = document.createElement("td");
+      const cSetCell.textContent = cSet;
+      const configCell = document.createElement("td");
+      configCell.textContent = configValues.join(',');
+      const mCell = document.createElement("td");
+      mCell.textContent = ms.map((i) => `[${i.join(',')}]`).join(', ');
+      row.appendChild(cSetCell);
+      row.appendChild(configCell);
+      row.appendChild(mCell);
+      const actionsCell = document.createElement('td');
+      actionsCell.className = 'row-action';
       const auditionButton = document.createElement('button');
       auditionButton.textContent = "audition";
       auditionButton.addEventListener('click', () => audtionColorSet(tr));
-      actions.appendChild(auditionButton);
-      tr.appendChild(actions);
-      tableBody.appendChild(tr);
-    });
+      actionsCell.appendChild(auditionButton);
+      row.appendChild(actions);
+      tableBody.appendChild(row);
+    }
   }
 
   function audtionColorSet(sourceRow) {
@@ -238,9 +244,7 @@
     const rotationValues = getValues(rotation);
     const filterValues = getValues(filter);
     const scalesToM = buildScalesToM(configValues, rotationValues, filterValues);
-    populateTable(
-      Array.from(scalesToM, ([k, v]) => [k, v.map((i) => `[${i.join(',')}]`).join(', ')])
-    );
+    populateTable(configValues, scalesToM);
   }
   
   addRingBtn.addEventListener('click', () => addInput(config));
