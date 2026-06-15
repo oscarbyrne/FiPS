@@ -34,6 +34,18 @@
   </style>
 </head>
 <body>
+  <table>
+    <thead>
+      <tr>
+        <th>c set</th>
+        <th>m</th>
+      </tr>
+    </thead>
+    <tbody id="audtionTableBody">
+      <!-- Rows injected by JS -->
+    </tbody>
+  </table>
+  <hr>
   <div class="row">
     <label>Octave lock:</label>
     <input id="octaveLockCb" type="checkbox" checked>
@@ -94,6 +106,7 @@
   const octaveLockCb = document.getElementById('octaveLockCb');
   const updateBtn = document.getElementById('updateBtn');
   const tableBody = document.getElementById('tableBody');
+  const audtionTableBody = document.getElementById('audtionTableBody');
 
   function addInput(parent, value = null) {
     const row = document.createElement('div');
@@ -135,8 +148,34 @@
         td.textContent = col;
         tr.appendChild(td);
       });
+      const actions = document.createElement('td');
+      actions.className = 'row-action';
+      const auditionButton = document.createElement('button');
+      auditionButton.textContent = "audition";
+      auditionButton.addEventListener('click', () => audtionColorSet(row));
+      actions.appendChild(auditionButton);
+      tr.appendChild(actions);
       tableBody.appendChild(tr);
     });
+  }
+
+  function audtionColorSet(sourceRow) {
+    const cells = sourceRow.querySelectorAll('td:not(.row-action)');
+    const newRow = document.createElement('tr');
+    cells.forEach(cell => {
+      const newCell = document.createElement('td');
+      newCell.textContent = cell.textContent;
+      newRow.appendChild(newCell);
+    })
+    const actions = document.createElement('td');
+    actions.className = 'row-action';
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'X';
+    removeButton.addEventListener('click', () => newRow.remove());
+    actions.appendChild(removeButton);
+  
+    newRow.appendChild(actions);
+    audtionTableBody.appendChild(newRow);
   }
 
   function J(d, m, k) {
