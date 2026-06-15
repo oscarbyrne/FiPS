@@ -39,6 +39,7 @@
       <tr>
         <th>c set</th>
         <th>m</th>
+        <th>actions</th>
       </tr>
     </thead>
     <tbody id="audtionTableBody">
@@ -88,6 +89,7 @@
       <tr>
         <th>c set</th>
         <th>m</th>
+        <th>actions</th>
       </tr>
     </thead>
     <tbody id="tableBody">
@@ -152,7 +154,7 @@
       actions.className = 'row-action';
       const auditionButton = document.createElement('button');
       auditionButton.textContent = "audition";
-      auditionButton.addEventListener('click', () => audtionColorSet(row));
+      auditionButton.addEventListener('click', () => audtionColorSet(tr));
       actions.appendChild(auditionButton);
       tr.appendChild(actions);
       tableBody.appendChild(tr);
