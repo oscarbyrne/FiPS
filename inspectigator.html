@@ -1,0 +1,80 @@
+<head>
+  <title>Inspectigator</title>
+  <style>
+    input, button {
+      margin: 0.25em;
+      width: 3em;
+      box-sizing: border-box;
+    }
+    #ringControl {
+      display: flex;
+      gap: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="ringInputs">
+    <input class="ringInput" type="number" value="12">
+  </div>
+  <div id="ringControl">
+    <button id="subRingBtn" tabindex="-1">-</button>
+    <button id="addRingBtn" tabindex="-1">+</button>
+  </div>
+</body>
+<script>
+  const ringInputs = document.getElementById('ringInputs');
+  const addRingBtn = document.getElementById('addRingBtn');
+  const subRingBtn = document.getElementById('subRingBtn');
+  
+  function getFocusedRingInput() {
+    const focused = document.activeElement;
+    if (focused && focused.classList.contains('ringInput')) {
+      return focused;
+    } else {
+      return ringInputs.lastElementChild;
+    }
+  }
+  
+  function addRing() {
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.classList.add('ringInput');
+    const focused = getFocusedRingInput();
+    focused.after(input);
+    input.focus();
+  }
+  
+  function subRing() {
+    const focused = getFocusedRingInput();
+    if (focused !== focused.parentElement.firstElementChild) {
+      focused.previousElementSibling.focus();
+      focused.remove();
+    }
+  }
+  
+  addRingBtn.addEventListener('click', addRing);
+  subRingBtn.addEventListener('click', subRing);
+  document.addEventListener('keydown', function(event) {
+    if (
+      (event.key === '=') ||
+      (
+        (event.key === 'Tab') &&
+        (!event.shiftKey) &&
+        (getFocusedRingInput() === ringInputs.lastElementChild)
+      )
+    ) {
+      event.preventDefault();
+      addRingBtn.click();
+    } else if (
+      (event.key === '-') ||
+      (
+        (event.key === 'Backspace') &&
+        (getFocusedRingInput().value.trim() === "")
+      )
+    ) {
+      event.preventDefault();
+      subRingBtn.click();
+    }
+  });
+
+</script>
