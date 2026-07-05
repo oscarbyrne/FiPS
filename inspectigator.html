@@ -58,8 +58,7 @@
     if (
       (event.key === '=') ||
       (
-        (event.key === 'Tab') &&
-        (!event.shiftKey) &&
+        (event.key === 'Tab' && !event.shiftKey) &&
         (getFocusedRingInput() === ringInputs.lastElementChild)
       )
     ) {
