@@ -146,7 +146,7 @@
   }
   
   function mergeRowSpans(table, offset) {
-    const rows = [...table.rows];
+    const rows = [...table.tBodies[0].rows];
     const cells = rows.map(r => [...r.cells]);
     const vals = cells.map(row => row.map(td => td.textContent.trim()));
     const mergeCols = vals[0].length;
@@ -177,7 +177,7 @@
   
   function getPinnedKSets() {
     const pinned = [];
-    for (const row of outputTable.rows) {
+    for (const row of outputTable.tBodies[0].rows) {
       const checkbox = row.cells[0].children[0];
       if (checkbox && checkbox.checked) {
         pinned.push(
@@ -202,6 +202,7 @@
     ).toSorted(
       compare
     );
+    console.log(pinnedReadings);
   }
   
   function clearTable() {
@@ -212,8 +213,7 @@
     updateReadings();
     clearTable();
     for (const reading of readings) {
-      console.log(reading);
-      const row = outputTable.insertRow(-1);
+      const row = outputTable.tBodies[0].insertRow(-1);
       for (const data of reading) {
         const cell = row.insertCell(-1);
         cell.textContent = data.join(',');
