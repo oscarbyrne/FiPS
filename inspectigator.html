@@ -193,7 +193,9 @@
   function updateReadings() {
     const pinnedKSets = getPinnedKSets();
     const pinnedReadings = readings.filter(
-      ([kSet, config, m]) => pinnedKSets.includes(kSet)
+      ([kSet, config, m]) => pinnedKSets.some(
+        pinned => compare(pinned, kSet)
+      )
     );
     const newConfig = getConfig();
     const newReadings = getReadings(newConfig);
