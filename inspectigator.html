@@ -168,10 +168,16 @@
     }
   }
   
-  function addPinCheckbox(row) {
+  function addPinCheckbox(row, kSet, pinnedKSets) {
     const pin = row.insertCell(0);
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
+    const pinned = pinnedKSets.some(
+      pinnedKSet => compare(pinnedKSet, kSet)
+    );
+    if (pinned) {
+      checkbox.checked = true;
+    }
     pin.appendChild(checkbox);
   }
   
@@ -204,7 +210,7 @@
     ).toSorted(
       compare
     );
-    console.log(pinnedReadings);
+    return pinnedKSets;
   }
   
   function clearTable() {
@@ -212,7 +218,7 @@
   }
   
   function updateTable() {
-    updateReadings();
+    const pinnedKSets = updateReadings();
     clearTable();
     for (const reading of readings) {
       const row = outputTable.tBodies[0].insertRow(-1);
@@ -220,7 +226,7 @@
         const cell = row.insertCell(-1);
         cell.textContent = data.join(',');
       }
-      addPinCheckbox(row);
+      addPinCheckbox(row, reading[0], pinnedKSets);
     }
     mergeRowSpans(outputTable, 1);
   }
