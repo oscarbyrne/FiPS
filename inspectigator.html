@@ -144,16 +144,18 @@
     return a.length - b.length;
   }
   
-  function mergeRowSpans(table, mergeCols = 2) {
+  function mergeRowSpans(table, offset) {
     const rows = [...table.rows];
     const cells = rows.map(r => [...r.cells]);
     const vals = cells.map(row => row.map(td => td.textContent.trim()));
+    const mergeCols = vals[0].length;
   
     for (let col = 0; col < mergeCols; col++) {
+      const depth = col <= offset ? offset + 1 : col + 1;
       for (let i = 0; i < rows.length; ) {
         let span = 1;
         while (i + span < rows.length &&
-               vals[i].slice(0, col + 1).every((v, k) => v === vals[i + span][k])) {
+               vals[i].slice(0, depth).every((v, k) => v === vals[i + span][k])) {
           span++;
         }
         if (span > 1) {
@@ -177,8 +179,10 @@
         const cell = row.insertCell(-1);
         cell.textContent = data.join(',');
       }
+      const pin = row.insertCell(0);
+      pin.textContent = 'hi';
     }
-    mergeRowSpans(outputTable);
+    mergeRowSpans(outputTable, 1);
   }
   
   function configHandler(event) {
@@ -216,4 +220,5 @@
   showBtn.addEventListener('click', updateTable);
   document.addEventListener('keydown', configHandler);
   document.addEventListener('keydown', updateHandler);
+
 </script>
