@@ -167,20 +167,57 @@
     }
   }
   
-  function updateTable() {
-    const readings = getReadings(
-      getConfig()
+  function addPinCheckbox(row) {
+    const pin = row.insertCell(0);
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    pin.appendChild(checkbox);
+  }
+  
+  function getPinnedKSets() {
+    const pinned = [];
+    for (const row of outputTable.rows) {
+      const checkbox = row.cells[0].children[0];
+      if (checkbox && checkbox.checked) {
+        pinned.push(
+          row.cells[1].textContent.split(',').map(Number)
+        )
+      }
+    }
+    return pinned;
+  }
+  
+  let readings = []
+  
+  function updateReadings() {
+    const pinnedKSets = getPinnedKSets();
+    const pinnedReadings = readings.filter(
+      ([kSet, config, m]) => pinnedKSets.includes(kSet)
+    );
+    const newConfig = getConfig();
+    const newReadings = getReadings(newConfig);
+    readings = newReadings.concat(
+      pinnedReadings
     ).toSorted(
       compare
     );
+  }
+  
+  function clearTable() {
+    document.querySelector('#outputTable tbody').innerHTML = "";
+  }
+  
+  function updateTable() {
+    updateReadings();
+    clearTable();
     for (const reading of readings) {
+      console.log(reading);
       const row = outputTable.insertRow(-1);
       for (const data of reading) {
         const cell = row.insertCell(-1);
         cell.textContent = data.join(',');
       }
-      const pin = row.insertCell(0);
-      pin.textContent = 'hi';
+      addPinCheckbox(row);
     }
     mergeRowSpans(outputTable, 1);
   }
@@ -220,5 +257,6 @@
   showBtn.addEventListener('click', updateTable);
   document.addEventListener('keydown', configHandler);
   document.addEventListener('keydown', updateHandler);
+  
 
 </script>
