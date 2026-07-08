@@ -144,6 +144,27 @@
     return a.length - b.length;
   }
   
+  function mergeRowSpans(table, mergeCols = 2) {
+    const rows = [...table.rows];
+    const cells = rows.map(r => [...r.cells]);
+    const vals = cells.map(row => row.map(td => td.textContent.trim()));
+  
+    for (let col = 0; col < mergeCols; col++) {
+      for (let i = 0; i < rows.length; ) {
+        let span = 1;
+        while (i + span < rows.length &&
+               vals[i].slice(0, col + 1).every((v, k) => v === vals[i + span][k])) {
+          span++;
+        }
+        if (span > 1) {
+          cells[i][col].rowSpan = span;
+          for (let k = 1; k < span; k++) cells[i + k][col].remove();
+        }
+        i += span;
+      }
+    }
+  }
+  
   function updateTable() {
     const readings = getReadings(
       getConfig()
@@ -157,6 +178,7 @@
         cell.textContent = data.join(',');
       }
     }
+    mergeRowSpans(outputTable);
   }
   
   function configHandler(event) {
