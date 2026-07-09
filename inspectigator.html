@@ -198,15 +198,28 @@
   
   function updateReadings() {
     const pinnedKSets = getPinnedKSets();
-    const pinnedReadings = readings.filter(
+    const pinnedReadingsOld = readings.filter(
       ([kSet, config, m]) => pinnedKSets.some(
         pinned => compare(pinned, kSet) === 0
       )
     );
     const newConfig = getConfig();
     const newReadings = getReadings(newConfig);
-    readings = pinnedReadings.concat(
-      pinnedReadings.toSorted(compare)
+    const pinnedReadingsNew = readings.filter(
+      ([kSet, config, m]) => pinnedKSets.some(
+        pinned => compare(pinned, kSet) === 0
+      )
+    );
+    const mergedPinnedReadings = pinnedReadingsOld.concat(
+      pinnedReadingsNew
+    );
+    const newReadingsNoPinned = newReadings.filter(
+      ([kSet, config, m]) => pinnedKSets.every(
+        pinned => compare(pinned, kSet) !== 0
+      )
+    );
+    readings = mergedPinnedReadings.toSorted(compare).concat(
+      newReadingsNoPinned.toSorted(compare)
     );
     return pinnedKSets;
   }
