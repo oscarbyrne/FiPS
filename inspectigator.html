@@ -205,7 +205,7 @@
     );
     const newConfig = getConfig();
     const newReadings = getReadings(newConfig);
-    const pinnedReadingsNew = readings.filter(
+    const pinnedReadingsNew = newReadings.filter(
       ([kSet, config, m]) => pinnedKSets.some(
         pinned => compare(pinned, kSet) === 0
       )
