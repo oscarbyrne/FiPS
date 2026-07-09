@@ -173,7 +173,7 @@
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     const pinned = pinnedKSets.some(
-      pinnedKSet => compare(pinnedKSet, kSet)
+      pinnedKSet => compare(pinnedKSet, kSet) === 0
     );
     if (pinned) {
       checkbox.checked = true;
@@ -200,7 +200,7 @@
     const pinnedKSets = getPinnedKSets();
     const pinnedReadings = readings.filter(
       ([kSet, config, m]) => pinnedKSets.some(
-        pinned => compare(pinned, kSet)
+        pinned => compare(pinned, kSet) === 0
       )
     );
     const newConfig = getConfig();
