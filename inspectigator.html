@@ -185,7 +185,7 @@
     for (const data of reading.data) {
       row.appendChild(
         createDataCell(
-          JSON.stringify(data)
+          data.join(',')
         )
       );
     }
