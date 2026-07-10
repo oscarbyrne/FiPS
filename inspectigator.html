@@ -164,7 +164,7 @@
     const row = document.createElement('tr');
     const assignTBody = function(pinned) {
       const tBodyId = pinned ? 0 : 1;
-      outputTable.tBody[tBodyId].appendChild(row)
+      outputTable.tBodies[tBodyId].appendChild(row)
     };
     assignTBody(reading.pinned);
     addCheckboxCell(row, reading.pinned, assignTBody);
@@ -176,7 +176,7 @@
   function updateTable() {
     const config = getConfig();
     const readings = getReadings(config);
-    outputTable.tBody[1].innerHTML = '';
+    outputTable.tBodies[1].innerHTML = '';
     for (const reading of readings) {
       createRow(reading, false);
     }
