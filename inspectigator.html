@@ -108,24 +108,35 @@
     }
   }
 
-  function safeStringify(data) {
-    if (typeof data === 'string') {
-      try {
-        JSON.parse(data);
-        return data;
-      } catch {
-        return JSON.stringify(data);
-      }
-    }
-    return JSON.stringify(data);
-  }
-
+  let readings = [];
+  let pinnedKSets = new Set();
 
   class Reading {
     constructor(kSet, config, m) {
-      this.kSet = safeStringify(kSet);
-      this.config = safeStringify(config);
-      this.m = safeStringify(m);
+      this.kSet = kSet;
+      this.config = config;
+      this.m = m;
+    }
+    get data() {
+      return [this.kSet, this.config, this.m];
+    }
+    get pinned() {
+      return pinnedKSets.has(
+        JSON.stringify(this.kSet)
+      );
+    }
+    pin() {
+      pinnedKSets.add(
+        JSON.stringify(this.kSet)
+      );
+    }
+    serialize() {
+      return JSON.stringify(this.data);
+    }
+    static deserialize(json) {
+      return Reading(
+        ...JSON.parse(json)
+      );
     }
   }
   
@@ -146,40 +157,65 @@
     return readings;
   }
 
-  function addCheckboxCell(row, checked, onChange) {
-    const cell = row.insertCell(-1);
+  function createCheckboxCell(checked, onChange) {
+    const cell = document.createElement('td');
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = checked;
     checkbox.addEventListener('change', (event) => onChange(event.target.checked));
     cell.appendChild(checkbox);
+    return cell;
   }
 
-  function addDataCell(row, data) {
-    const cell = row.insertCell(-1);
+  function createDataCell(data) {
+    const cell = document.createElement('td');
     cell.textContent = data;
+    return cell;
   }
 
   function createRow(reading) {
     const row = document.createElement('tr');
-    const assignTBody = function(pinned) {
-      const tBodyId = pinned ? 0 : 1;
-      outputTable.tBodies[tBodyId].appendChild(row)
-    };
-    assignTBody(reading.pinned);
-    addCheckboxCell(row, reading.pinned, assignTBody);
-    addDataCell(row, reading.kSet);
-    addDataCell(row, reading.config);
-    addDataCell(row, reading.m);
+    const updatePinnedStatus(status) {
+      reading.pin();
+      redrawTable();
+    }
+    row.appendChild(
+      createCheckboxCell(reading.pinned, updatePinnedStatus)
+    );
+    for (const data of reading.data) {
+      row.appendChild(
+        createDataCell(
+          JSON.stringify(data)
+        )
+      );
+    }
+    return row;
   }
   
-  function updateTable() {
-    const config = getConfig();
-    const readings = getReadings(config);
-    outputTable.tBodies[1].innerHTML = '';
-    for (const reading of readings) {
-      createRow(reading, false);
+  function redrawTable() {
+    for (const tBody of outputTable.tBodies) {
+      tBody.innerHTML = "";
     }
+    for (const reading of readings) {
+      outputTable.tBodies[reading.pinned ? 0 : 1].appendChild(
+        createRow(reading)
+      );
+    }
+  }
+
+  function updateReadings() {
+    const config = getConfig();
+    const pinned = readings.filter((reading) => reading.pinned);
+    const merged = pinned.concat(getReadings(config));
+    const serial = merged.map(reading => reading.serialize());
+    const unique = new Set(...serial);
+    const sorted = [...unique].toSorted();
+    readings = sorted.map((reading) => Reading.deserialize(reading));
+  }
+
+  function update() {
+    updateReadings();
+    redrawTable();
   }
   
   function configHandler(event) {
@@ -214,7 +250,7 @@
   
   addRingBtn.addEventListener('click', addRing);
   subRingBtn.addEventListener('click', subRing);
-  showBtn.addEventListener('click', updateTable);
+  showBtn.addEventListener('click', update);
   document.addEventListener('keydown', configHandler);
   document.addEventListener('keydown', updateHandler);
   
