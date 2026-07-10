@@ -134,7 +134,7 @@
       return JSON.stringify(this.data);
     }
     static deserialize(json) {
-      return Reading(
+      return new Reading(
         ...JSON.parse(json)
       );
     }
@@ -208,7 +208,7 @@
     const pinned = readings.filter((reading) => reading.pinned);
     const merged = pinned.concat(getReadings(config));
     const serial = merged.map(reading => reading.serialize());
-    const unique = new Set(...serial);
+    const unique = new Set(serial);
     const sorted = [...unique].toSorted();
     readings = sorted.map((reading) => Reading.deserialize(reading));
   }
