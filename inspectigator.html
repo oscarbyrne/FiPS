@@ -50,6 +50,9 @@
     <tbody>
       <!-- Rows injected by JS -->
     </tbody>
+    <tbody>
+      <!-- Rows injected by JS -->
+    </tbody>
   </table>
 </body>
 <script>
@@ -104,6 +107,30 @@
       if (i < 0) return;
     }
   }
+
+  function safeStringify(data) {
+    if (typeof data === 'string') {
+      try {
+        JSON.parse(data);
+        return data;
+      } catch {
+        return JSON.stringify(data);
+      }
+    }
+    return JSON.stringify(data);
+  }
+
+
+  class Reading {
+    constructor(kSet, config, m) {
+      this.kSet = safeStringify(kSet);
+      this.config = safeStringify(config);
+      this.m = safeStringify(m);
+    }
+    get pinned() {
+      
+    }
+  }
   
   function getReadings(config) {
     const readings = [];
@@ -116,33 +143,10 @@
           k => J(config, m, k)
       );
       readings.push(
-        [kSet, config, m]
+        new Reading(kSet, config, m)
       )
     }
     return readings;
-  }
-  
-  function compare(a, b) {
-    const aIsArray = Array.isArray(a);
-    const bIsArray = Array.isArray(b);
-  
-    // Both are numbers
-    if (!aIsArray && !bIsArray) {
-      return a - b;
-    }
-  
-    // Treat numbers as single-element arrays if types differ
-    if (!aIsArray) a = [a];
-    if (!bIsArray) b = [b];
-  
-    const len = Math.min(a.length, b.length);
-  
-    for (let i = 0; i < len; i++) {
-      const result = compare(a[i], b[i]);
-      if (result !== 0) return result;
-    }
-  
-    return a.length - b.length;
   }
   
   function mergeRowSpans(table, offset) {
@@ -167,82 +171,40 @@
       }
     }
   }
-  
-  function addPinCheckbox(row, kSet, pinnedKSets) {
-    const pin = row.insertCell(0);
+
+  function addCheckboxCell(row, checked, onChange) {
+    const cell = row.insertCell(-1);
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    const pinned = pinnedKSets.some(
-      pinnedKSet => compare(pinnedKSet, kSet) === 0
-    );
-    if (pinned) {
-      checkbox.checked = true;
-    }
-    pin.appendChild(checkbox);
+    checkbox.checked = checked;
+    checkbox.addEventListener('change', (event) => onChange(event.target.checked));
+    cell.appendChild(checkbox);
   }
-  
-  function getPinnedKSets() {
-    const pinned = [];
-    for (const row of outputTable.tBodies[0].rows) {
-      const checkbox = row.cells[0].children[0];
-      if (checkbox && checkbox.checked) {
-        pinned.push(
-          row.cells[1].textContent.split(',').map(Number)
-        )
-      }
-    }
-    return pinned;
+
+  function addDataCell(row, data) {
+    const cell = row.insertCell(-1);
+    cell.textContent = data;
   }
-  
-  let readings = []
-  
-  function updateReadings() {
-    const pinnedKSets = getPinnedKSets();
-    const pinnedReadingsOld = readings.filter(
-      ([kSet, config, m]) => pinnedKSets.some(
-        pinned => compare(pinned, kSet) === 0
-      )
-    );
-    const newConfig = getConfig();
-    const newReadings = getReadings(newConfig);
-    const brandNewReadings = newReadings.filter(
-      (newReading) => readings.some(
-        oldReading => compare(oldReading, newReading) !== 0
-      )
-    );
-    const pinnedReadingsNew = brandNewReadings.filter(
-      ([kSet, config, m]) => pinnedKSets.some(
-        pinned => compare(pinned, kSet) === 0
-      )
-    );
-    const mergedPinnedReadings = pinnedReadingsOld.concat(
-      pinnedReadingsNew
-    );
-    const newReadingsNoPinned = newReadings.filter(
-      ([kSet, config, m]) => pinnedKSets.every(
-        pinned => compare(pinned, kSet) !== 0
-      )
-    );
-    readings = mergedPinnedReadings.toSorted(compare).concat(
-      newReadingsNoPinned.toSorted(compare)
-    );
-    return pinnedKSets;
-  }
-  
-  function clearTable() {
-    document.querySelector('#outputTable tbody').innerHTML = "";
+
+  function createRow(reading) {
+    const row = document.createElement('tr');
+    const assignTBody = function(pinned) {
+      const tBodyId = pinned ? 0 : 1;
+      outputTable.tBody[tBodyId].appendChild(row)
+    };
+    assignTBody(reading.pinned);
+    addCheckboxCell(row, reading.pinned, assignTBody);
+    addDataCell(row, reading.kSet);
+    addDataCell(row, reading.config);
+    addDataCell(row, reading.m);
   }
   
   function updateTable() {
-    const pinnedKSets = updateReadings();
+    const pinnedKSets = getPinnedKSets();
+    updateReadings();
     clearTable();
     for (const reading of readings) {
-      const row = outputTable.tBodies[0].insertRow(-1);
-      for (const data of reading) {
-        const cell = row.insertCell(-1);
-        cell.textContent = data.join(',');
-      }
-      addPinCheckbox(row, reading[0], pinnedKSets);
+      createRow(reading, pinnedKSets.includes(reading.kSet));
     }
     mergeRowSpans(outputTable, 1);
   }
