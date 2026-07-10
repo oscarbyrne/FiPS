@@ -211,7 +211,7 @@
       )
     ).filter(
       (newReading) => pinnedReadingsOld.some(
-        oldReading => compare(oldReading, newReading) === 0
+        oldReading => compare(oldReading, newReading) !== 0
       )
     );
     const mergedPinnedReadings = pinnedReadingsOld.concat(
