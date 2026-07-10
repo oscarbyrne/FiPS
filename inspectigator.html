@@ -204,14 +204,14 @@
       )
     );
     const newConfig = getConfig();
-    const newReadings = getReadings(newConfig);
+    const newReadings = getReadings(newConfig).filter(
+      (newReading) => readings.some(
+        oldReading => compare(oldReading, newReading) !== 0
+      )
+    );
     const pinnedReadingsNew = newReadings.filter(
       ([kSet, config, m]) => pinnedKSets.some(
         pinned => compare(pinned, kSet) === 0
-      )
-    ).filter(
-      (newReading) => pinnedReadingsOld.some(
-        oldReading => compare(oldReading, newReading) !== 0
       )
     );
     const mergedPinnedReadings = pinnedReadingsOld.concat(
