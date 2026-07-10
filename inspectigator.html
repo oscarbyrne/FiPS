@@ -209,6 +209,10 @@
       ([kSet, config, m]) => pinnedKSets.some(
         pinned => compare(pinned, kSet) === 0
       )
+    ).filter(
+      (newReading) => pinnedReadingsOld.some(
+        oldReading => compare(oldReading, newReading) === 0
+      )
     );
     const mergedPinnedReadings = pinnedReadingsOld.concat(
       pinnedReadingsNew
