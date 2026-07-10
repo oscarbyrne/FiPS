@@ -175,7 +175,7 @@
 
   function createRow(reading) {
     const row = document.createElement('tr');
-    const updatePinnedStatus(status) {
+    const updatePinnedStatus = function(status) {
       reading.pin();
       redrawTable();
     }
