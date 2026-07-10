@@ -191,6 +191,30 @@
     }
     return row;
   }
+
+  function mergeRowSpans(table, offset = 1) {
+    const bodies = table.tBodies?.length ? [...table.tBodies] : [table];
+    const rows = bodies.flatMap(b => [...b.rows]);
+    const cells = rows.map(r => [...r.cells]);
+    const vals = cells.map(row => row.map(td => td.textContent.trim()));
+    const mergeCols = vals[0].length;
+  
+    for (let col = 0; col < mergeCols; col++) {
+      const depth = col <= offset ? offset + 1 : col + 1;
+      for (let i = 0; i < rows.length; ) {
+        let span = 1;
+        while (i + span < rows.length &&
+               vals[i].slice(0, depth).every((v, k) => v === vals[i + span][k])) {
+          span++;
+        }
+        if (span > 1) {
+          cells[i][col].rowSpan = span;
+          for (let k = 1; k < span; k++) cells[i + k][col].remove();
+        }
+        i += span;
+      }
+    }
+  }
   
   function redrawTable() {
     for (const tBody of outputTable.tBodies) {
@@ -201,6 +225,7 @@
         createRow(reading)
       );
     }
+    mergeRowSpans(outputTable);
   }
 
   function updateReadings() {
