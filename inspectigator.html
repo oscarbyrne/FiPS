@@ -145,7 +145,7 @@
   }
 
   function greatestCommonDenominator(a, b) {
-    return b === 0 ? Math.abs(a) : gcd(b, a % b);
+    return b === 0 ? Math.abs(a) : greatestCommonDenominator(b, a % b);
   }
 
   class KClass {
