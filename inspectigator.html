@@ -129,7 +129,7 @@
     }
     serialize() {
       return JSON.stringify([
-        this.kClass.map((k => [k.c, k.d])),
+        this.kSet.map((k => [k.c, k.d])),
         this.config,
         this.m
       ]);
