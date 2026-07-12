@@ -129,7 +129,7 @@
     }
     serialize() {
       return JSON.stringify([
-        this.kSet.map((k => [k.c, k.d])),
+        this.kClass.map((k => [k.c, k.d])),
         this.config,
         this.m
       ]);
@@ -137,7 +137,7 @@
     static deserialize(json) {
       const [kSet, config, m] = JSON.parse(json);
       return new Reading(
-        kSet.map(([c, d]) => new KSet(c, d)),
+        kSet.map(([c, d]) => new KClass(c, d)),
         config,
         m
       );
