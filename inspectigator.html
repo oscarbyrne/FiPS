@@ -117,9 +117,6 @@
       this.config = config;
       this.m = m;
     }
-    get data() {
-      return [this.kSet, this.config, this.m];
-    }
     get pinned() {
       return pinnedKSets.has(
         JSON.stringify(this.kSet)
@@ -131,12 +128,34 @@
       );
     }
     serialize() {
-      return JSON.stringify(this.data);
+      return JSON.stringify([
+        this.kSet.map((k => [k.c, k.d]),
+        this.config,
+        this.m
+      ]);
     }
     static deserialize(json) {
+      const [kSet, config, m] = JSON.parse(json);
       return new Reading(
-        ...JSON.parse(json)
+        kSet.map(([c, d]) => new KSet(c, d)),
+        config,
+        m
       );
+    }
+  }
+
+  function greatestCommonDenominator(a, b) {
+    return b === 0 ? Math.abs(a) : gcd(b, a % b);
+  }
+
+  class KClass {
+    constructor(c, d) {
+      const gcd = greatestCommonDenominator(c, d);
+      this.c = c / gcd;
+      this.d = d / gcd;
+    }
+    toHTML() {
+      return `${this.c}<sub>${this.d}</sub>`
     }
   }
   
@@ -148,7 +167,7 @@
     for (const m of rotations) {
       const beams = range(config.at(-1)); 
       const kSet = beams.map(
-          k => J(config, m, k)
+        k => new KClass(J(config, m, k), config[0])
       );
       readings.push(
         new Reading(kSet, config, m)
@@ -169,7 +188,7 @@
 
   function createDataCell(data) {
     const cell = document.createElement('td');
-    cell.textContent = data;
+    cell.innerHTML = data;
     return cell;
   }
 
@@ -179,16 +198,19 @@
       reading.pin();
       redrawTable();
     }
-    row.appendChild(
-      createCheckboxCell(reading.pinned, updatePinnedStatus)
-    );
-    for (const data of reading.data) {
-      row.appendChild(
-        createDataCell(
-          data.join(',')
-        )
-      );
-    }
+    row.appendChild(createCheckboxCell(
+      reading.pinned,
+      updatePinnedStatus
+    ));
+    row.appendChild(createDataCell(
+      reading.kSet.map(kClass => kClass.toHTML()).join(',')
+    ));
+    row.appendChild(createDataCell(
+      reading.config.join(',')
+    ));
+    row.appendChild(createDataCell(
+      reading.m.join(',')
+    ));
     return row;
   }
 
