@@ -122,10 +122,9 @@
         JSON.stringify(this.kSet)
       );
     }
-    pin() {
-      pinnedKSets.add(
-        JSON.stringify(this.kSet)
-      );
+    pin(status) {
+      const key = JSON.stringify(this.kSet);
+      status ? pinnedKSets.add(key) : pinnedKSets.delete(key);
     }
     serialize() {
       return JSON.stringify([
@@ -195,7 +194,7 @@
   function createRow(reading) {
     const row = document.createElement('tr');
     const updatePinnedStatus = function(status) {
-      reading.pin();
+      reading.pin(status);
       redrawTable();
     }
     row.appendChild(createCheckboxCell(
