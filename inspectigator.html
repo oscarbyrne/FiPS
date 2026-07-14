@@ -126,6 +126,37 @@
       const key = JSON.stringify(this.kSet);
       status ? pinnedKSets.add(key) : pinnedKSets.delete(key);
     }
+    compare(that) {
+      /*
+      Negative value (< 0): this should come before that
+      Positive value (> 0): that should come before this
+      Zero (=== 0): Keep the original order relative to each other 
+      */
+      const compareArrayLength = (a, b) => a.length - b.length;
+      const compareElements = function(a, b, comparator) {
+        let c;
+        for (let i = 0; i < a.length; i++) {
+          c = comparator(a[i], b[i]);
+          if (c !== 0) {
+            break;
+          } else {
+            continue;
+          }
+        };
+        return c;
+      };
+      const compareArray = function(a, b, elementComparator = (a, b) => a - b) {
+        return compareArrayLength(a, b) || compareElements(a, b, elementComparator);
+      }
+      const compareKClass = (a, b) => a.c - b.c || b.d - a.d;
+
+      return (
+        compareArray(this.kSet, that.kSet, compareKClass) ||
+        compareArray(this.config, that.config) ||
+        compareArray(this.m, that.m)
+      );
+        
+    }
     serialize() {
       return JSON.stringify([
         this.kSet.map((k => [k.c, k.d])),
@@ -255,8 +286,7 @@
     const merged = pinned.concat(getReadings(config));
     const serial = merged.map(reading => reading.serialize());
     const unique = new Set(serial);
-    const sorted = [...unique].toSorted();
-    readings = sorted.map((reading) => Reading.deserialize(reading));
+    readings = [...unique].map((reading) => Reading.deserialize(reading)).toSorted((a, b) => a.compare(b));
   }
 
   function update() {
