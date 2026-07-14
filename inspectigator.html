@@ -42,6 +42,7 @@
     <thead>
       <tr>
         <th>pin</th>
+        <th>🔊</th>
         <th>k class set</th>
         <th>config</th>
         <th>m</th>
@@ -145,17 +146,15 @@
         };
         return c;
       };
-      const compareArray = function(a, b, elementComparator = (a, b) => a - b) {
-        return compareArrayLength(a, b) || compareElements(a, b, elementComparator);
-      }
-      const compareKClass = (a, b) => a.c - b.c || b.d - a.d;
+      const compareArray = (a, b, comparator) => compareArrayLength(a, b) || compareElements(a, b, comparator);
+      const compareInteger = (a, b) => a - b;
+      const compareKClass = (a, b) => compareInteger(a.c, b.c) || compareInteger(b.d, a.d);
 
       return (
         compareArray(this.kSet, that.kSet, compareKClass) ||
-        compareArray(this.config, that.config) ||
-        compareArray(this.m, that.m)
+        compareArray(this.config, that.config, compareInteger) ||
+        compareArray(this.m, that.m, compareInteger)
       );
-        
     }
     serialize() {
       return JSON.stringify([
@@ -216,6 +215,18 @@
     return cell;
   }
 
+  function createToggleCell(initial, options, onChange) {
+    let index = initial;
+    const cell = document.createElement('td');
+    const increment = function() {
+      index = (index + 1) % options.length;
+      cell.innerText = options[index];
+      onChange(index);
+    }
+    cell.innerText = options[initial];
+    cell.addEventListener('click', increment)
+  }
+
   function createDataCell(data) {
     const cell = document.createElement('td');
     cell.innerHTML = data;
@@ -228,9 +239,17 @@
       reading.pin(status);
       redrawTable();
     }
+    const updateAuditionStatus = function(status) {
+      console.log('audition status: ', status);
+    }
     row.appendChild(createCheckboxCell(
       reading.pinned,
       updatePinnedStatus
+    ));
+    row.appendChild(createToggleCell(
+      0,
+      [🪘, 🎹],
+      updateAuditionStatus
     ));
     row.appendChild(createDataCell(
       reading.kSet.map(kClass => kClass.toHTML()).join(',')
@@ -244,7 +263,7 @@
     return row;
   }
 
-  function mergeRowSpans(table, offset = 1) {
+  function mergeRowSpans(table, offset) {
     const bodies = table.tBodies?.length ? [...table.tBodies] : [table];
     const rows = bodies.flatMap(b => [...b.rows]);
     const cells = rows.map(r => [...r.cells]);
@@ -277,7 +296,7 @@
         createRow(reading)
       );
     }
-    mergeRowSpans(outputTable);
+    mergeRowSpans(outputTable, 2);
   }
 
   function updateReadings() {
