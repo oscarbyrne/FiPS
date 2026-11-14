@@ -1,0 +1,307 @@
+/* Look and feel after the Drexciya Research Lab blog (Blogger "Minima Black"):
+   black page, light grey Trebuchet text, a boxed header with spaced capitals,
+   green titles, dotted rules and thin dark borders. */
+
+:root {
+  color-scheme: dark;
+  --bg: #000;
+  --text: #ccc;
+  --muted: #777;
+  --edge: #222;        /* faint borders */
+  --edge-strong: #333; /* outer borders, field borders */
+  --rule: #444;        /* dotted rules, key caps */
+  --link: #99aadd;
+  --accent: #aadd99;   /* post-title green, hover and focus */
+  --warn: #dd9999;
+  --font: "Trebuchet MS", Trebuchet, Verdana, sans-serif;
+  --col: 660px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 40px 20px;
+  background: var(--bg);
+  color: var(--text);
+  font: small var(--font);
+  text-align: center;
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- small spaced capitals, the blog's label style ---- */
+.field-label,
+.keys-table th,
+#hotkeys h2,
+#hint {
+  font-size: 78%;
+  line-height: 1.4em;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* ---- header: a box inside a box ---- */
+#header {
+  width: 100%;
+  max-width: var(--col);
+  margin: 0 auto 10px;
+  border: 1px solid var(--edge-strong);
+}
+#site-title {
+  margin: 5px;
+  padding: 20px 20px calc(20px + 0.25em);
+  border: 1px solid var(--edge);
+  font-size: 200%;
+  font-weight: normal;
+  line-height: 1.2em;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text);
+}
+
+/* ---- page column ---- */
+#content {
+  width: 100%;
+  max-width: var(--col);
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* ---- controls ---- */
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 1.5em 0 0;
+}
+#f {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.field-label {
+  font-weight: bold;
+  color: var(--muted);
+}
+
+input[type="text"],
+#k {
+  padding: 10px 12px;
+  font: inherit;
+  line-height: normal;
+  background: var(--bg);
+  color: var(--text);
+  caret-color: var(--accent);
+  border: 1px solid var(--edge-strong);
+  border-radius: 0;
+}
+input[type="text"] {
+  field-sizing: content;
+  min-width: 5em;
+}
+input[type="text"]::placeholder {
+  color: var(--rule);
+  opacity: 1;
+}
+#k {
+  display: inline-block;
+  min-width: 5em;          /* stands in for field-sizing on a div */
+  white-space: nowrap;
+  cursor: text;            /* a div only shows the text cursor over its characters */
+}
+#k sub {
+  line-height: 0;          /* keeps subscripts from making the field taller than the inputs */
+}
+#k:empty::before {
+  content: attr(data-placeholder);
+  color: var(--rule);
+}
+input[type="text"]:focus,
+#k:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+button {
+  padding: 10px 12px;
+  font: inherit;
+  background: transparent;
+  color: var(--link);
+  border: 1px solid var(--edge-strong);
+  border-radius: 0;
+  cursor: pointer;
+}
+button:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---- messages ---- */
+#hint {
+  margin: 1em 0 0;
+  color: var(--warn);
+}
+#hint:empty {
+  display: none;
+}
+
+/* ---- output ---- */
+#output {
+  margin-top: 1.5em;
+}
+
+/* ---- table ---- */
+.keys-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: inherit;
+}
+.keys-table th,
+.keys-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--edge-strong);
+  vertical-align: middle;
+  text-align: left;
+}
+.keys-table th {
+  font-weight: bold;
+  color: var(--muted);
+}
+.keys-table tbody.pinned {
+  border-bottom: 2px solid var(--rule); /* pinned keys sit above the rest */
+}
+.keys-table tbody.empty td {
+  color: var(--muted);
+}
+.keys-table tbody tr {
+  cursor: pointer;
+}
+.keys-table tbody tr.set-hover:not(.auditioning) > td {
+  background: #111; /* every row of the hovered K class set, set by renderKeysTable */
+}
+.keys-table tr.auditioning > td {
+  /* --audition-color is set per row from the sound its K class set is playing */
+  background: var(--audition-color, rgba(46, 160, 67, 0.25));
+}
+/* Pinned column: as narrow as its content (the 1% width plus nowrap shrinks it
+   to fit), left aligned like the others. The empty-state row spans all four
+   columns, so it is left out. */
+.keys-table th:last-child,
+.keys-table tbody:not(.empty) td:last-child {
+  width: 1%;
+  white-space: nowrap;
+  text-align: left;
+}
+/* Checkbox in the early-2000s desktop style: a 13px white box with a sunken
+   bevel and a pixel-art black tick. Margin is reset so its left edge lines up
+   with the text in the other columns and with the header. */
+.keys-table input[type="checkbox"] {
+  appearance: none;
+  display: block;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 7px 7px;
+  image-rendering: pixelated;
+  border: 1px solid;
+  border-color: #808080 #fff #fff #808080;           /* outer bevel: dark top-left, light bottom-right */
+  box-shadow: inset 1px 1px #404040, inset -1px -1px #d4d0c8; /* inner bevel */
+  border-radius: 0;
+  cursor: pointer;
+}
+.keys-table input[type="checkbox"]:checked {
+  /* 7x7 pixel tick, drawn as one rectangle per run of pixels */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7' shape-rendering='crispEdges'%3E%3Cpath d='M6 0h1v1h-1zM5 1h2v1h-2zM0 2h1v1h-1zM4 2h3v1h-3zM0 3h2v1h-2zM3 3h3v1h-3zM0 4h5v1h-5zM1 5h3v1h-3zM2 6h1v1h-1z'/%3E%3C/svg%3E");
+}
+.keys-table input[type="checkbox"]:focus-visible {
+  outline: 1px dotted var(--text); /* the dotted focus ring of that era */
+  outline-offset: 2px;
+}
+
+/* ---- hotkey overlay ---- */
+#hotkeys {
+  min-width: min(90vw, 420px);
+  padding: 20px 24px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--edge-strong);
+  text-align: left;
+}
+#hotkeys::backdrop {
+  background: rgba(0, 0, 0, 0.8);
+}
+#hotkeys h2 {
+  margin: 0 0 1em;
+  font-weight: bold;
+  color: var(--muted);
+}
+#hotkeys dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  margin: 0 0 1.5em;
+  align-items: center;
+  line-height: 1.5em;
+}
+#hotkeys dd {
+  margin: 0;
+}
+kbd {
+  display: inline-block;
+  min-width: 1.8em;
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+  font: inherit;
+  text-align: center;
+  color: var(--accent);
+}
+
+/* ---- toast (export and re-roll feedback) ---- */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--rule);
+  letter-spacing: 0.1em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+#toast.visible {
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  body {
+    padding: 20px 10px;
+  }
+  #site-title {
+    font-size: 150%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #toast {
+    transition: none;
+  }
+}
