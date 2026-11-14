@@ -3,14 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
     <meta name="author" content="Oscar Byrne" />
-    <meta name="description" content="" />
     <title>Inspectigator</title>
     <link rel="stylesheet" href="src/style.css" />
-    <script type="module" src="src/script.js" defer></script>
+    <script src="https://unpkg.com/@strudel/web" defer></script> <!-- defines initStrudel and samples -->
+    <script type="module" src="src/main.js"></script>
   </head>
   <body>
-    <input type="text" id="input" autofocus>
-    <div id="output"></div>
+    <div id="header">
+      <h1 id="site-title">FiPS Inspectigator</h1>
+    </div>
+
+    <div id="content">
+      <div id="controls">
+        <form id="f">
+          <div class="field">
+            <span class="field-label">K classes</span>
+            <div id="k" contenteditable="true" role="textbox" aria-label="K classes"
+                 spellcheck="false" data-placeholder="1:2,3:4"></div>
+          </div>
+          <label class="field">
+            <span class="field-label">Config</span>
+            <input id="nums" type="text" inputmode="decimal" autocomplete="off" placeholder="16,4" autofocus>
+          </label>
+          <label class="field">
+            <span class="field-label">M</span>
+            <input id="m" type="text" inputmode="decimal" autocomplete="off" placeholder="0">
+          </label>
+          <button type="submit" hidden></button>
+        </form>
+        <button id="help" type="button" aria-haspopup="dialog">Help</button>
+      </div>
+
+      <p id="hint"></p>
+      <div id="output"></div>
+    </div>
+
+    <dialog id="hotkeys" aria-labelledby="hotkeys-title">
+      <h2 id="hotkeys-title">Hotkeys</h2>
+      <dl id="hotkey-list"></dl> <!-- filled in by src/ui/hotkeys.js -->
+      <form method="dialog">
+        <button>Close</button>
+      </form>
+    </dialog>
+
+    <div id="toast" role="status" aria-live="polite"></div>
   </body>
 </html>
